@@ -14,8 +14,7 @@ class NetStatsParser {
     static final String AVERAGE_LATENCY = "avg_latency";
 
     static Map<String, String> parse(String s) throws ArrayIndexOutOfBoundsException {
-        Map<String, String> parsedOutput;
-        parsedOutput = new HashMap<>();
+        Map<String, String> parsedOutput = new HashMap<>();
         parsedOutput.put(IP_ADDRESS, s.split(":")[0].trim());
 
         String packets = s.split(":")[2].split("App")[0].trim();

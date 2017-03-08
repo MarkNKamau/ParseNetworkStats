@@ -11,7 +11,7 @@ public class Main extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("UI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/UI.fxml"));
         primaryStage.setTitle("Parse Net Stats");
         primaryStage.setScene(new Scene(root, 650, 550));
         primaryStage.setMinWidth(650);
