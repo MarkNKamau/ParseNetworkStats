@@ -1,5 +1,9 @@
 package com.marknkamau;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.marknkamau.models.JSONOutput;
+import com.marknkamau.models.PingStats;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -12,6 +16,7 @@ import javafx.stage.FileChooser;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,11 +32,13 @@ public class UIController implements Initializable {
     @FXML
     private TextField txtOutputFolder;
     @FXML
-    private Button btnOutputFile;
+    private Button btnOutputFolder;
     @FXML
     private CheckBox checkOutputText;
     @FXML
     private CheckBox checkOutputCSV;
+    @FXML
+    private CheckBox checkOutputJSON;
     @FXML
     private TextField txtOutputFile;
     @FXML
@@ -42,6 +49,7 @@ public class UIController implements Initializable {
     private LocalDate dateChosen;
     private List<String> outputCSV;
     private List<String> outputTXT;
+    private List<PingStats> JSONFormat;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,7 +74,7 @@ public class UIController implements Initializable {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Output directory");
 
-        File output = directoryChooser.showDialog(btnOutputFile.getScene().getWindow());
+        File output = directoryChooser.showDialog(btnOutputFolder.getScene().getWindow());
         if (output != null) {
             txtOutputFolder.setText(output.getPath());
         }
@@ -110,14 +118,15 @@ public class UIController implements Initializable {
         outputCSV.add(date);
         outputCSV.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS");
 
+        JSONFormat = new ArrayList<>();
+
         for (String s : fileContents) {
             try {
                 Map<String, String> dataMap = NetStatsParser.parse(s);
-                if (dataMap == null){
+                if (dataMap == null) {
                     continue;
                 }
                 formatForText(dataMap);
-                formatForCSV(dataMap);
             } catch (Exception e) {
                 if (e instanceof ArrayIndexOutOfBoundsException) {
                     e = new InputFormatException();
@@ -131,11 +140,53 @@ public class UIController implements Initializable {
             Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".txt").toPath();
             writeToFile(target, outputTXT);
         }
+
         if (checkOutputCSV.isSelected()) {
+            for (String s : fileContents) {
+                try {
+                    Map<String, String> dataMap = NetStatsParser.parse(s);
+                    if (dataMap == null) {
+                        continue;
+                    }
+                    formatForCSV(dataMap);
+                } catch (Exception e) {
+                    if (e instanceof ArrayIndexOutOfBoundsException) {
+                        e = new InputFormatException();
+                    }
+                    showErrorAlert(e);
+                }
+            }
+
             Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".csv").toPath();
             writeToFile(target, outputCSV);
         }
 
+        if (checkOutputJSON.isSelected()) {
+            for (String s : fileContents) {
+                try {
+                    Map<String, String> dataMap = NetStatsParser.parse(s);
+                    if (dataMap == null) {
+                        continue;
+                    }
+                    formatForJSON(dataMap);
+                } catch (Exception e) {
+                    if (e instanceof ArrayIndexOutOfBoundsException) {
+                        e = new InputFormatException();
+                    }
+                    showErrorAlert(e);
+                }
+            }
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String outputJSON = gson.toJson(new JSONOutput(date, JSONFormat));
+            List<String> list = new ArrayList<>();
+            list.add(outputJSON);
+
+            Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".json").toPath();
+            writeToFile(target, list);
+        }
+
+        textArea.appendText("\n");
         for (String s : outputTXT) {
             textArea.appendText(s + "\n");
         }
@@ -204,12 +255,33 @@ public class UIController implements Initializable {
         }
     }
 
+    private void formatForJSON(Map<String, String> map) throws Exception {
+        try {
+            PingStats pingStats = new PingStats(
+                    map.get(NetStatsParser.IP_ADDRESS),
+                    map.get(NetStatsParser.PACKETS_SENT),
+                    map.get(NetStatsParser.PACKETS_RECEIVED),
+                    map.get(NetStatsParser.PACKETS_LOST),
+                    map.get(NetStatsParser.PACKETS_LOST_PERCENT),
+                    map.get(NetStatsParser.MINIMUM_LATENCY),
+                    map.get(NetStatsParser.MAXIMUM_LATENCY),
+                    map.get(NetStatsParser.AVERAGE_LATENCY)
+            );
+            JSONFormat.add(pingStats);
+        } catch (Exception e) {
+            if (e instanceof ArrayIndexOutOfBoundsException) {
+                e = new InputFormatException();
+            }
+            throw e;
+        }
+    }
+
     private void writeToFile(Path targetFile, List<String> content) {
         try {
             FileInteraction.writeFileByLine(targetFile, content, false, () -> {
                 Date completed = Calendar.getInstance().getTime();
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                textArea.appendText("Saved to " + targetFile.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n\n");
+                textArea.appendText("Saved to " + targetFile.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
             });
         } catch (Exception e) {
             if (e instanceof ArrayIndexOutOfBoundsException) {

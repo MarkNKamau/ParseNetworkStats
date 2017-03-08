@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -24,23 +25,24 @@
         </rowConstraints>
          <children>
             <Label text="Input file" />
-            <Label text="Output folder" GridPane.rowIndex="1" />
-            <TextArea fx:id="textArea" editable="false" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
             <TextField fx:id="txtInputFile" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-            <TextField fx:id="txtOutputFolder" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Button fx:id="btnInputFile" mnemonicParsing="false" onAction="#selectInput" prefWidth="126.0" text="Select Input File" GridPane.columnIndex="3" />
-            <Button fx:id="btnOutputFile" mnemonicParsing="false" onAction="#selectOutput" text="Select Output Folder" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label text="Output folder" GridPane.rowIndex="1" />
+            <TextField fx:id="txtOutputFolder" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Button fx:id="btnOutputFolder" mnemonicParsing="false" onAction="#selectOutput" text="Select Output Folder" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label text="Output filename" GridPane.rowIndex="2" />
+            <TextField fx:id="txtOutputFile" promptText="Without file extension" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <CheckBox fx:id="checkOutputText" mnemonicParsing="false" selected="true" text="Text File (.txt)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <CheckBox fx:id="checkOutputCSV" mnemonicParsing="false" text="CSV (.csv)" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <CheckBox fx:id="checkOutputJSON" mnemonicParsing="false" text="JSON (.json)" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <TextArea fx:id="textArea" editable="false" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+            <Label text="Date" GridPane.rowIndex="4" />
+            <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
             <Button mnemonicParsing="false" onAction="#parse" prefWidth="200.0" text="Convert" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                </GridPane.margin></Button>
-            <Label text="Date" GridPane.rowIndex="4" />
-            <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
-            <CheckBox fx:id="checkOutputText" mnemonicParsing="false" selected="true" text="Text File (.txt)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <CheckBox fx:id="checkOutputCSV" mnemonicParsing="false" text="CSV (.csv)" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <Label text="Output Formats" GridPane.rowIndex="3" />
-            <Label text="Output filename" GridPane.rowIndex="2" />
-            <TextField fx:id="txtOutputFile" promptText="Without file extensions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
