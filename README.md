@@ -2,10 +2,10 @@
 A java application that parses multiple network statistics outputs into a more readable form.  
 It can output in .txt, .csv or .json.
 
-##Usage
+## Usage
 Actual parsing file can be found [here](https://github.com/MarkNKamau/ParseNetworkStats/blob/master/src/com/marknkamau/NetStatsParser.java).   
 
-####1. Prepare a text file of network statistics formatted as...  
+#### 1. Prepare a text file of network statistics formatted as...  
 ```
 Ping statistics for x.x.x.x:  
    Packets: Sent = x, Received = x, Lost = x (x% loss),  
@@ -16,9 +16,9 @@ Approximate round trip times in milli-seconds:`
 Any part not formatted as such will produce an error be skiped. However, it may still cause errors in the output.
   
 
-####2. Select the appropriate locations and names of files.   
+#### 2. Select the appropriate locations and names of files.   
 Output folder may be left blank.
-####3. Select the preferred output formats.  
+#### 3. Select the preferred output formats.  
 If no output format is selected, a preview of the data will still be given.
 
 ## Screenshot
