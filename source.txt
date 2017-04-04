@@ -1,0 +1,29 @@
+Ping statistics for 192.168.1.84:
+    Packets: Sent = 84423, Received = 84392, Lost = 31 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 3ms, Maximum = 109ms, Average = 4ms
+
+Ping statistics for 192.168.1.90:
+    Packets: Sent = 84435, Received = 84402, Lost = 33 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 3ms, Maximum = 115ms, Average = 5ms
+
+Ping statistics for 196.201.223.27:
+    Packets: Sent = 171243, Received = 171130, Lost = 113 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 4ms, Maximum = 110ms, Average = 5ms
+
+Ping statistics for 192.168.1.86:
+    Packets: Sent = 84564, Received = 84527, Lost = 37 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 3ms, Maximum = 116ms, Average = 4ms
+
+Ping statistics for 192.168.1.250:
+    Packets: Sent = 84708, Received = 84677, Lost = 31 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 108ms, Average = 3ms
+
+Ping statistics for 192.168.0.250:
+    Packets: Sent = 83677, Received = 83677, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 73ms, Average = 0ms
