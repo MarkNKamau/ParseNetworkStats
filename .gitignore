@@ -1,3 +1,5 @@
 .idea
 ParseNetStats.iml
 target
+out
+stats2.txt
