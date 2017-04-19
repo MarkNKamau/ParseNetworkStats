@@ -4,13 +4,14 @@ package com.marknkamau;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
 class FileInteraction {
 
-    public static List<String> readFileTokens(Path source, String delimiter) throws Exception {
+    public static List<String> readFileTokens(Path source, String delimiter) throws IOException {
         List<String> tokens = new ArrayList<>();
         BufferedReader reader = Files.newBufferedReader(source);
 
