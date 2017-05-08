@@ -20,50 +20,50 @@ public class Presenter {
             readFileContents(source);
     }
 
-    private void readFileContents(Path source) throws IOException, EmptyInputFileException, FileDoesNotExistException {
+    private void readFileContents(Path source) throws IOException, EmptyInputFile, FileDoesNotExist {
         try {
             filecontents = FileInteraction.readFileTokens(source, "Ping statistics for ");
         } catch (NoSuchFileException e) {
-            throw new FileDoesNotExistException();
+            throw new FileDoesNotExist();
         }
         if (filecontents.isEmpty()) {
-            throw new EmptyInputFileException();
+            throw new EmptyInputFile();
         }
     }
 
-    private boolean validateInputFile(Path source) throws InputExtensionException, InputMissingExtensionException {
+    private boolean validateInputFile(Path source) throws IncorrectInputExtension, InputFileMissingExtension {
         String inputExtension;
         try {
             inputExtension = source.getFileName().toString().split("\\.")[1];
 
             if (!inputExtension.equals("txt")) {
-                throw new InputExtensionException();
+                throw new IncorrectInputExtension();
             } else {
                 return true;
             }
         } catch (Exception e) {
             if (e instanceof ArrayIndexOutOfBoundsException) {
-                throw new InputMissingExtensionException();
+                throw new InputFileMissingExtension();
             }
             throw e;
         }
     }
 
-    public List<String> getTextOutput() throws InputFormatException {
+    public List<String> getTextOutput() throws IncorrectInputFormat {
         if (mapList.isEmpty()) {
             mapList = getDataMapList(filecontents);
         }
         return formatForText(mapList);
     }
 
-    public List<String> getCSVOutput() throws InputFormatException {
+    public List<String> getCSVOutput() throws IncorrectInputFormat {
         if (mapList.isEmpty()) {
             mapList = getDataMapList(filecontents);
         }
         return formatForCSV(mapList);
     }
 
-    public List<PingStats> getJSONOutput() throws InputFormatException {
+    public List<PingStats> getJSONOutput() throws IncorrectInputFormat {
         if (mapList.isEmpty()) {
             mapList = getDataMapList(filecontents);
         }
@@ -74,19 +74,19 @@ public class Presenter {
         FileInteraction.writeFileByLine(targetFile, content, false, listener);
     }
 
-    private List<Map<String, String>> getDataMapList(List<String> fileContents) throws InputFormatException{
+    private List<Map<String, String>> getDataMapList(List<String> fileContents) throws IncorrectInputFormat {
         List<Map<String, String>> output = new ArrayList<>();
         for (String s : fileContents) {
             try {
                 output.add(NetStatsParser.parse(s));
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new InputFormatException();
+                throw new IncorrectInputFormat();
             }
         }
         return output;
     }
 
-    private List<String> formatForText(List<Map<String, String>> mapList) throws InputFormatException {
+    private List<String> formatForText(List<Map<String, String>> mapList) throws IncorrectInputFormat {
         List<String> output = new ArrayList<>();
         output.add("Date: " + date);
         for (Map<String, String> map : mapList) {
@@ -102,7 +102,7 @@ public class Presenter {
                 output.add("Percentage packets lost: " + map.get(NetStatsParser.PACKETS_LOST_PERCENT));
             } catch (Exception e) {
                 if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new InputFormatException();
+                    throw new IncorrectInputFormat();
                 }
                 throw e;
             }
@@ -110,7 +110,7 @@ public class Presenter {
         return output;
     }
 
-    private List<String> formatForCSV(List<Map<String, String>> mapList) throws InputFormatException {
+    private List<String> formatForCSV(List<Map<String, String>> mapList) throws IncorrectInputFormat {
         List<String> output = new ArrayList<>();
         output.add(date);
         output.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS");
@@ -127,7 +127,7 @@ public class Presenter {
                 );
             } catch (Exception e) {
                 if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new InputFormatException();
+                    throw new IncorrectInputFormat();
                 }
                 throw e;
             }
@@ -135,7 +135,7 @@ public class Presenter {
         return output;
     }
 
-    private List<PingStats> formatForJSON(List<Map<String, String>> mapList) throws InputFormatException {
+    private List<PingStats> formatForJSON(List<Map<String, String>> mapList) throws IncorrectInputFormat {
         List<PingStats> output = new ArrayList<>();
         for (Map<String, String> map : mapList) {
             try {
@@ -152,7 +152,7 @@ public class Presenter {
                 output.add(pingStats);
             } catch (Exception e) {
                 if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new InputFormatException();
+                    throw new IncorrectInputFormat();
                 }
                 throw e;
             }

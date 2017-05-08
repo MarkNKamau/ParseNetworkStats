@@ -1,10 +1,10 @@
 package com.marknkamau.Exceptions;
 
-public class EmptyFieldsException extends MyExceptions{
+public class EmptyFields extends BaseException {
     private static final String TITLE = "Empty fields";
     private static final String EMPTY_FIELDS = "All fields are required";
 
-    public EmptyFieldsException() {
+    public EmptyFields() {
         super(TITLE, EMPTY_FIELDS);
     }
 }

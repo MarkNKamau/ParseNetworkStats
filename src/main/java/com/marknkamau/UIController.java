@@ -2,10 +2,10 @@ package com.marknkamau;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marknkamau.Exceptions.EmptyFieldsException;
-import com.marknkamau.Exceptions.InputFormatException;
-import com.marknkamau.Exceptions.InputMissingExtensionException;
-import com.marknkamau.Exceptions.MyExceptions;
+import com.marknkamau.Exceptions.EmptyFields;
+import com.marknkamau.Exceptions.IncorrectInputFormat;
+import com.marknkamau.Exceptions.InputFileMissingExtension;
+import com.marknkamau.Exceptions.BaseException;
 import com.marknkamau.models.JSONOutput;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -79,7 +79,7 @@ public class UIController implements Initializable {
     @FXML
     public void parse() {
         if (fieldsAreEmpty()) {
-            showErrorAlert(new EmptyFieldsException());
+            showErrorAlert(new EmptyFields());
             return;
         }
 
@@ -101,7 +101,7 @@ public class UIController implements Initializable {
         List<String> textOutput;
         try {
             textOutput = presenter.getTextOutput();
-        } catch (InputFormatException e) {
+        } catch (IncorrectInputFormat e) {
             showErrorAlert(e);
             return;
         }
@@ -164,11 +164,11 @@ public class UIController implements Initializable {
     private void showErrorAlert(Exception e) {
         e.printStackTrace();
         if (e instanceof ArrayIndexOutOfBoundsException) {
-            e = new InputMissingExtensionException();
+            e = new InputFileMissingExtension();
         }
         String title;
-        if (e instanceof MyExceptions) {
-            title = ((MyExceptions) e).getTitle();
+        if (e instanceof BaseException) {
+            title = ((BaseException) e).getTitle();
         } else {
             title = e.getMessage();
         }

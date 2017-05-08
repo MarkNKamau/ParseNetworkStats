@@ -1,10 +1,10 @@
 package com.marknkamau.Exceptions;
 
-public class InputMissingExtensionException extends MyExceptions {
+public class InputFileMissingExtension extends BaseException {
     private static final String TITLE = "File missing extention";
     private static final String MISSING_INPUT_EXTENSION = "Input file does not have an extension.";
 
-    public InputMissingExtensionException() {
+    public InputFileMissingExtension() {
         super(TITLE, MISSING_INPUT_EXTENSION);
     }
 }

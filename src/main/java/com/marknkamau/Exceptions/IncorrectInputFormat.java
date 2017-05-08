@@ -1,6 +1,6 @@
 package com.marknkamau.Exceptions;
 
-public class InputFormatException extends MyExceptions {
+public class IncorrectInputFormat extends BaseException {
     private static final String TITLE = "Input format error";
     private static final String ILLEGAL_CONTENT_FORMAT = "Some of the input was not formatted correctly.\n\nEnsure input is in the format of:\n\n" +
             "Ping statistics for x.x.x.x:\n" +
@@ -8,7 +8,7 @@ public class InputFormatException extends MyExceptions {
             "Approximate round trip times in milli-seconds:\n" +
             "    Minimum = x ms, Maximum = x ms, Average = x ms";
 
-    public InputFormatException() {
+    public IncorrectInputFormat() {
         super(TITLE, ILLEGAL_CONTENT_FORMAT);
     }
 }

@@ -1,10 +1,10 @@
 package com.marknkamau.Exceptions;
 
-public class MyExceptions extends Exception {
+public class BaseException extends Exception {
     private final String title;
     private final String message;
 
-    public MyExceptions(String title, String message) {
+    public BaseException(String title, String message) {
         this.title = title;
         this.message = message;
     }
