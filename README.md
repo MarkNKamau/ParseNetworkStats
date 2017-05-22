@@ -13,13 +13,13 @@ Approximate round trip times in milli-seconds:`
    Minimum = x ms, Maximum = x ms, Average = x ms
 ```
 
-Any part not formatted as such will produce an error be skiped. However, it may still cause errors in the output.
+Any part not formatted as such will produce an error be skipped. However, it may still cause errors in the output.
   
-
 #### 2. Select the appropriate locations and names of files.   
 Output folder may be left blank.
-#### 3. Select the preferred output formats.  
-If no output format is selected, a preview of the data will still be given.
+
+
+#### 3. Select the preferred output format(s).
 
 ## Screenshot
 <img src="https://raw.githubusercontent.com/MarkNKamau/ParseNetworkStats/master/screenshots/main.png" width="500">   

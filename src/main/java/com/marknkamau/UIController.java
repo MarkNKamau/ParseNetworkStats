@@ -2,10 +2,7 @@ package com.marknkamau;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marknkamau.Exceptions.EmptyFields;
-import com.marknkamau.Exceptions.IncorrectInputFormat;
-import com.marknkamau.Exceptions.InputFileMissingExtension;
-import com.marknkamau.Exceptions.BaseException;
+import com.marknkamau.Exceptions.*;
 import com.marknkamau.models.JSONOutput;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -56,6 +53,7 @@ public class UIController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         datePicker.setValue(LocalDate.now());
     }
+
     @FXML
     public void selectInput() {
         FileChooser fileChooser = new FileChooser();
@@ -100,7 +98,12 @@ public class UIController implements Initializable {
             return;
         }
 
+        if (!checkOutputText.isSelected() && !checkOutputCSV.isSelected() && !checkOutputJSON.isSelected()) {
+            showErrorAlert(new NoOutputSelected());
+            return;
+        }
         textArea.clear();
+
         if (checkOutputText.isSelected()) {
             outputTxtFile();
         }
@@ -115,7 +118,7 @@ public class UIController implements Initializable {
 
     }
 
-    private void outputTxtFile(){
+    private void outputTxtFile() {
         List<String> textOutput;
         try {
             textOutput = presenter.getTextOutput();
@@ -172,7 +175,6 @@ public class UIController implements Initializable {
     }
 
     private void showErrorAlert(Exception e) {
-        e.printStackTrace();
         if (e instanceof ArrayIndexOutOfBoundsException) {
             e = new InputFileMissingExtension();
         }

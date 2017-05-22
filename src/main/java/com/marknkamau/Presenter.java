@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 class Presenter {
-    private String date;
+    private final String date;
     private List<String> fileContents;
     private List<PingStats> pingStats;
 
