@@ -8,25 +8,25 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Presenter {
+class Presenter {
     private String date;
-    private List<String> filecontents;
-    private List<Map<String, String>> mapList;
+    private List<String> fileContents;
+    private List<PingStats> pingStats;
 
-    public Presenter(String date, Path source) throws Exception {
+    Presenter(String date, Path source) throws Exception {
         this.date = date;
-        mapList = new ArrayList<>();
+        pingStats = new ArrayList<>();
         if (validateInputFile(source))
             readFileContents(source);
     }
 
     private void readFileContents(Path source) throws IOException, EmptyInputFile, FileDoesNotExist {
         try {
-            filecontents = FileInteraction.readFileTokens(source, "Ping statistics for ");
+            fileContents = FileInteraction.readFileTokens(source, "Ping statistics for ");
         } catch (NoSuchFileException e) {
             throw new FileDoesNotExist();
         }
-        if (filecontents.isEmpty()) {
+        if (fileContents.isEmpty()) {
             throw new EmptyInputFile();
         }
     }
@@ -49,115 +49,85 @@ public class Presenter {
         }
     }
 
-    public List<String> getTextOutput() throws IncorrectInputFormat {
-        if (mapList.isEmpty()) {
-            mapList = getDataMapList(filecontents);
+    List<String> getTextOutput() throws IncorrectInputFormat {
+        if (pingStats.isEmpty()) {
+            pingStats = getDataMapList(fileContents);
         }
-        return formatForText(mapList);
+
+        List<String> output = new ArrayList<>();
+        output.add("Date: " + date);
+        for (PingStats stats : pingStats) {
+            try {
+                output.add("");
+                output.add("Ping statistics for: " + stats.getIpAddress());
+                output.add("Minimum latency: " + stats.getMinLatency());
+                output.add("Maximum latency: " + stats.getMaxLatency());
+                output.add("Average latency: " + stats.getAvgLatency());
+                output.add("Packets sent: " + stats.getPacketsSent());
+                output.add("Packets received: " + stats.getPacketsReceived());
+                output.add("Packets lost: " + stats.getPacketsLost());
+                output.add("Percentage packets lost: " + stats.getPacketsLostPercentage());
+            } catch (Exception e) {
+                if (e instanceof ArrayIndexOutOfBoundsException) {
+                    throw new IncorrectInputFormat();
+                }
+                throw e;
+            }
+        }
+        return output;
     }
 
-    public List<String> getCSVOutput() throws IncorrectInputFormat {
-        if (mapList.isEmpty()) {
-            mapList = getDataMapList(filecontents);
+    List<String> getCSVOutput() throws IncorrectInputFormat {
+        if (pingStats.isEmpty()) {
+            pingStats = getDataMapList(fileContents);
         }
-        return formatForCSV(mapList);
+
+        List<String> output = new ArrayList<>();
+        output.add(date);
+        output.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS");
+        for (PingStats stats : pingStats) {
+            try {
+                output.add(stats.getIpAddress() + ", "
+                        + stats.getMinLatency() + ", "
+                        + stats.getMaxLatency() + ", "
+                        + stats.getAvgLatency() + ", "
+                        + stats.getPacketsSent() + ", "
+                        + stats.getPacketsReceived() + ", "
+                        + stats.getPacketsLost() + ", "
+                        + stats.getPacketsLostPercentage()
+                );
+            } catch (Exception e) {
+                if (e instanceof ArrayIndexOutOfBoundsException) {
+                    throw new IncorrectInputFormat();
+                }
+                throw e;
+            }
+        }
+
+        return output;
     }
 
-    public List<PingStats> getJSONOutput() throws IncorrectInputFormat {
-        if (mapList.isEmpty()) {
-            mapList = getDataMapList(filecontents);
+    List<PingStats> getJSONOutput() throws IncorrectInputFormat {
+        if (pingStats.isEmpty()) {
+            pingStats = getDataMapList(fileContents);
         }
-        return formatForJSON(mapList);
+        return pingStats;
     }
 
-    public void writeToFile(Path targetFile, List<String> content, FileInteraction.WriteListener listener) throws Exception {
+    void writeToFile(Path targetFile, List<String> content, FileInteraction.WriteListener listener) throws Exception {
         FileInteraction.writeFileByLine(targetFile, content, false, listener);
     }
 
-    private List<Map<String, String>> getDataMapList(List<String> fileContents) throws IncorrectInputFormat {
-        List<Map<String, String>> output = new ArrayList<>();
+    private List<PingStats> getDataMapList(List<String> fileContents) throws IncorrectInputFormat {
+        List<PingStats> stats = new ArrayList<>();
         for (String s : fileContents) {
             try {
-                output.add(NetStatsParser.parse(s));
+                stats.add(NetStatsParser.parse(s));
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new IncorrectInputFormat();
             }
         }
-        return output;
-    }
-
-    private List<String> formatForText(List<Map<String, String>> mapList) throws IncorrectInputFormat {
-        List<String> output = new ArrayList<>();
-        output.add("Date: " + date);
-        for (Map<String, String> map : mapList) {
-            try {
-                output.add("");
-                output.add("Ping statistics for: " + map.get(NetStatsParser.IP_ADDRESS));
-                output.add("Minimum latency: " + map.get(NetStatsParser.MINIMUM_LATENCY));
-                output.add("Maximum latency: " + map.get(NetStatsParser.MAXIMUM_LATENCY));
-                output.add("Average latency: " + map.get(NetStatsParser.AVERAGE_LATENCY));
-                output.add("Packets sent: " + map.get(NetStatsParser.PACKETS_SENT));
-                output.add("Packets received: " + map.get(NetStatsParser.PACKETS_RECEIVED));
-                output.add("Packets lost: " + map.get(NetStatsParser.PACKETS_LOST));
-                output.add("Percentage packets lost: " + map.get(NetStatsParser.PACKETS_LOST_PERCENT));
-            } catch (Exception e) {
-                if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new IncorrectInputFormat();
-                }
-                throw e;
-            }
-        }
-        return output;
-    }
-
-    private List<String> formatForCSV(List<Map<String, String>> mapList) throws IncorrectInputFormat {
-        List<String> output = new ArrayList<>();
-        output.add(date);
-        output.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS");
-        for (Map<String, String> map : mapList) {
-            try {
-                output.add(map.get(NetStatsParser.IP_ADDRESS) + ", "
-                        + map.get(NetStatsParser.MINIMUM_LATENCY) + ", "
-                        + map.get(NetStatsParser.MAXIMUM_LATENCY) + ", "
-                        + map.get(NetStatsParser.AVERAGE_LATENCY) + ", "
-                        + map.get(NetStatsParser.PACKETS_SENT) + ", "
-                        + map.get(NetStatsParser.PACKETS_RECEIVED) + ", "
-                        + map.get(NetStatsParser.PACKETS_LOST) + ", "
-                        + map.get(NetStatsParser.PACKETS_LOST_PERCENT)
-                );
-            } catch (Exception e) {
-                if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new IncorrectInputFormat();
-                }
-                throw e;
-            }
-        }
-        return output;
-    }
-
-    private List<PingStats> formatForJSON(List<Map<String, String>> mapList) throws IncorrectInputFormat {
-        List<PingStats> output = new ArrayList<>();
-        for (Map<String, String> map : mapList) {
-            try {
-                PingStats pingStats = new PingStats(
-                        map.get(NetStatsParser.IP_ADDRESS),
-                        map.get(NetStatsParser.PACKETS_SENT),
-                        map.get(NetStatsParser.PACKETS_RECEIVED),
-                        map.get(NetStatsParser.PACKETS_LOST),
-                        map.get(NetStatsParser.PACKETS_LOST_PERCENT),
-                        map.get(NetStatsParser.MINIMUM_LATENCY),
-                        map.get(NetStatsParser.MAXIMUM_LATENCY),
-                        map.get(NetStatsParser.AVERAGE_LATENCY)
-                );
-                output.add(pingStats);
-            } catch (Exception e) {
-                if (e instanceof ArrayIndexOutOfBoundsException) {
-                    throw new IncorrectInputFormat();
-                }
-                throw e;
-            }
-        }
-        return output;
+        return stats;
     }
 
 }
