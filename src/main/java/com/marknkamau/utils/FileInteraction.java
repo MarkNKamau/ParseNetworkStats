@@ -1,4 +1,4 @@
-package com.marknkamau;
+package com.marknkamau.utils;
 
 
 import java.io.BufferedReader;
@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-class FileInteraction {
+public class FileInteraction {
 
     public static List<String> readFileTokens(Path source, String delimiter) throws IOException {
         List<String> tokens = new ArrayList<>();
@@ -45,7 +45,7 @@ class FileInteraction {
         }
     }
 
-    interface WriteListener {
+    public interface WriteListener {
         void writeSuccessful();
     }
 }

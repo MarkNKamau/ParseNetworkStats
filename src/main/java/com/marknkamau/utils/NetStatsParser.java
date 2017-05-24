@@ -1,4 +1,4 @@
-package com.marknkamau;
+package com.marknkamau.utils;
 
 import com.marknkamau.models.PingStats;
 

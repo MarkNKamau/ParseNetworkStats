@@ -31,7 +31,7 @@
             <TextField fx:id="txtOutputFolder" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Button fx:id="btnOutputFolder" mnemonicParsing="false" onAction="#selectOutput" text="Select Output Folder" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <Label text="Output filename" GridPane.rowIndex="2" />
-            <TextField fx:id="txtOutputFile" promptText="Without file extension" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TextField fx:id="txtOutputFile" promptText="Desired filename (without extension)" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
             <CheckBox fx:id="checkOutputText" mnemonicParsing="false" selected="true" text="Text File (.txt)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <CheckBox fx:id="checkOutputCSV" mnemonicParsing="false" text="CSV (.csv)" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <CheckBox fx:id="checkOutputJSON" mnemonicParsing="false" text="JSON (.json)" GridPane.columnIndex="3" GridPane.rowIndex="3" />

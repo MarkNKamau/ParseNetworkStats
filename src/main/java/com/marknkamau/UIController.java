@@ -119,55 +119,36 @@ public class UIController implements Initializable {
     }
 
     private void outputTxtFile() {
-        List<String> textOutput;
-        try {
-            textOutput = presenter.getTextOutput();
-        } catch (IncorrectInputFormat e) {
-            showErrorAlert(e);
-            return;
-        }
-
         Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".txt").toPath();
-        try {
-            presenter.writeToFile(target, textOutput, () -> {
-                Date completed = Calendar.getInstance().getTime();
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-            });
-        } catch (Exception e) {
-            showErrorAlert(e);
-        }
+        presenter.writeToFile(target, presenter.getTextOutput(), () -> {
+            Date completed = Calendar.getInstance().getTime();
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
+        });
     }
 
     private void outputCsvFile() {
-        try {
-            Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".csv").toPath();
-            presenter.writeToFile(target, presenter.getCSVOutput(), () -> {
-                Date completed = Calendar.getInstance().getTime();
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-            });
-        } catch (Exception e) {
-            showErrorAlert(e);
-        }
+        Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".csv").toPath();
+
+        presenter.writeToFile(target, presenter.getCSVOutput(), () -> {
+            Date completed = Calendar.getInstance().getTime();
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
+        });
     }
 
     private void outputJsonFile() {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String outputJSON = gson.toJson(new JSONOutput(date, presenter.getJSONOutput()));
-            List<String> list = new ArrayList<>();
-            list.add(outputJSON);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String outputJSON = gson.toJson(new JSONOutput(date, presenter.getJsonOutput()));
+        List<String> list = new ArrayList<>();
+        list.add(outputJSON);
 
-            Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".json").toPath();
-            presenter.writeToFile(target, list, () -> {
-                Date completed = Calendar.getInstance().getTime();
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-            });
-        } catch (Exception e) {
-            showErrorAlert(e);
-        }
+        Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".json").toPath();
+        presenter.writeToFile(target, list, () -> {
+            Date completed = Calendar.getInstance().getTime();
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
+        });
     }
 
     private boolean fieldsAreEmpty() {
