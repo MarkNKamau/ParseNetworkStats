@@ -1,6 +1,5 @@
 package com.marknkamau.utils;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -30,15 +29,14 @@ public class FileInteraction {
 
     public static void writeFileByLine(Path target, List<String> content, Boolean append, WriteListener listener) throws Exception {
         FileWriter fileWriter = new FileWriter(target.toString(), append);
-
         try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
             for (String s : content) {
                 writer.append(s, 0, s.length());
                 writer.newLine();
             }
 
-            if (listener != null){
-                listener.writeSuccessful();
+            if (listener != null) {
+                listener.writeSuccessful(target.getFileName().toString());
             }
         } finally {
             fileWriter.close();
@@ -46,6 +44,6 @@ public class FileInteraction {
     }
 
     public interface WriteListener {
-        void writeSuccessful();
+        void writeSuccessful(String file);
     }
 }

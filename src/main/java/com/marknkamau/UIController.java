@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marknkamau.Exceptions.*;
 import com.marknkamau.models.JSONOutput;
+import com.marknkamau.utils.FileInteraction;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -91,8 +93,9 @@ public class UIController implements Initializable {
         LocalDate newDate = datePicker.getValue();
         date = newDate.format(formatter);
 
+        String outputFile = txtOutputFile.getText().trim();
         try {
-            presenter = new Presenter(date, sourceFile);
+            presenter = new Presenter(date, sourceFile, outputFolder, outputFile);
         } catch (Exception e) {
             showErrorAlert(e);
             return;
@@ -105,50 +108,17 @@ public class UIController implements Initializable {
         textArea.clear();
 
         if (checkOutputText.isSelected()) {
-            outputTxtFile();
+            presenter.createTXTOutput(file -> textArea.appendText("Saved to " + file + " at " + getFormattedCurrentTime() + "\n"));
         }
 
         if (checkOutputCSV.isSelected()) {
-            outputCsvFile();
+            presenter.createCSVOutput(file -> textArea.appendText("Saved to " + file + " at " + getFormattedCurrentTime() + "\n"));
         }
 
         if (checkOutputJSON.isSelected()) {
-            outputJsonFile();
+            presenter.createJsonOutput(file -> textArea.appendText("Saved to " + file + " at " + getFormattedCurrentTime() + "\n"));
         }
 
-    }
-
-    private void outputTxtFile() {
-        Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".txt").toPath();
-        presenter.writeToFile(target, presenter.getTextOutput(), () -> {
-            Date completed = Calendar.getInstance().getTime();
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-        });
-    }
-
-    private void outputCsvFile() {
-        Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".csv").toPath();
-
-        presenter.writeToFile(target, presenter.getCSVOutput(), () -> {
-            Date completed = Calendar.getInstance().getTime();
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-        });
-    }
-
-    private void outputJsonFile() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String outputJSON = gson.toJson(new JSONOutput(date, presenter.getJsonOutput()));
-        List<String> list = new ArrayList<>();
-        list.add(outputJSON);
-
-        Path target = new File(outputFolder + "\\" + txtOutputFile.getText().trim() + ".json").toPath();
-        presenter.writeToFile(target, list, () -> {
-            Date completed = Calendar.getInstance().getTime();
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-            textArea.appendText("Saved to " + target.toAbsolutePath() + " at " + timeFormat.format(completed) + "\n");
-        });
     }
 
     private boolean fieldsAreEmpty() {
@@ -170,6 +140,10 @@ public class UIController implements Initializable {
         alert.setHeaderText(null);
         alert.setTitle(title);
         alert.show();
+    }
+
+    private String getFormattedCurrentTime() {
+        return DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
     }
 
     @FXML

@@ -1,14 +1,18 @@
 package com.marknkamau
 
+import com.google.gson.GsonBuilder
+import com.marknkamau.models.JSONOutput
 import com.marknkamau.utils.FileInteraction.WriteListener
 import com.marknkamau.models.PingStats
 import com.marknkamau.utils.FileInteraction
 import com.marknkamau.utils.extractPingStats
 import com.marknkamau.utils.readFileTokens
 import com.marknkamau.utils.validateInputFile
+import java.io.File
 import java.nio.file.Path
+import java.util.ArrayList
 
-class Presenter(val date: String, source: Path) {
+class Presenter(val date: String, source: Path, val outputFolder: String, val outputFile: String) {
     var pingStats: MutableList<PingStats>
 
     init {
@@ -21,7 +25,27 @@ class Presenter(val date: String, source: Path) {
         }
     }
 
-    fun getTextOutput(): MutableList<String> {
+    fun createTXTOutput(listener: WriteListener) {
+        val target = File(outputFolder + "\\" + outputFile + ".txt").toPath()
+        writeToFile(target, getTextOutput(), listener)
+    }
+
+    fun createCSVOutput(listener: WriteListener) {
+        val target = File(outputFolder + "\\" + outputFile + ".csv").toPath()
+        writeToFile(target, getCSVOutput(), listener)
+    }
+
+    fun createJsonOutput(listener: WriteListener) {
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        val outputJSON = gson.toJson(JSONOutput(date, getJsonOutput()))
+        val list = ArrayList<String>()
+        list.add(outputJSON)
+
+        val target = File(outputFolder + "\\" + outputFile + ".json").toPath()
+        writeToFile(target, list, listener)
+    }
+
+    private fun getTextOutput(): MutableList<String> {
         val output: MutableList<String> = mutableListOf()
         output.add("Date: $date")
 
@@ -40,7 +64,7 @@ class Presenter(val date: String, source: Path) {
         return output
     }
 
-    fun getCSVOutput(): MutableList<String> {
+    private fun getCSVOutput(): MutableList<String> {
         val output: MutableList<String> = mutableListOf()
         output.add(date)
         output.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS")
@@ -60,9 +84,9 @@ class Presenter(val date: String, source: Path) {
         return output
     }
 
-    fun getJsonOutput() = pingStats
+    private fun getJsonOutput() = pingStats
 
-    fun writeToFile(targetFile:Path, content: List<String>, listener: WriteListener){
+    private fun writeToFile(targetFile: Path, content: List<String>, listener: WriteListener) {
         FileInteraction.writeFileByLine(targetFile, content, false, listener)
     }
 
