@@ -3,7 +3,7 @@ A java application that parses multiple network statistics outputs into a more r
 It can output in .txt, .csv or .json.
 
 ## Usage
-Actual parsing file can be found [here](/src/main/java/com/marknkamau/NetStatsParser.java).   
+Actual parsing file can be found [here](/src/main/java/com/marknkamau/utils/NetStatsParser.java).   
 
 #### 1. Prepare a text file of network statistics formatted as...  
 ```
