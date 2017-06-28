@@ -26,12 +26,12 @@ class Presenter(val date: String, source: Path, val outputFolder: String, val ou
     }
 
     fun createTXTOutput(listener: WriteListener) {
-        val target = File(outputFolder + "\\" + outputFile + ".txt").toPath()
+        val target = File("$outputFolder\\$outputFile.txt").toPath()
         writeToFile(target, getTextOutput(), listener)
     }
 
     fun createCSVOutput(listener: WriteListener) {
-        val target = File(outputFolder + "\\" + outputFile + ".csv").toPath()
+        val target = File("$outputFolder\\$outputFile.csv").toPath()
         writeToFile(target, getCSVOutput(), listener)
     }
 
@@ -41,7 +41,7 @@ class Presenter(val date: String, source: Path, val outputFolder: String, val ou
         val list = ArrayList<String>()
         list.add(outputJSON)
 
-        val target = File(outputFolder + "\\" + outputFile + ".json").toPath()
+        val target = File("$outputFolder\\$outputFile.json").toPath()
         writeToFile(target, list, listener)
     }
 
@@ -69,16 +69,9 @@ class Presenter(val date: String, source: Path, val outputFolder: String, val ou
         output.add(date)
         output.add("IP ADDRESS, MIN, MAX, AVG, SENT, RECEIVED, LOST, % LOSS")
 
-        for (stats in pingStats) {
-            output.add("" +
-                    "${stats.ipAddress}, " +
-                    "${stats.minLatency}, " +
-                    "${stats.maxLatency}, " +
-                    "${stats.avgLatency}, " +
-                    "${stats.packetsSent}, " +
-                    "${stats.packetsReceived}, " +
-                    "${stats.packetsLost}, " +
-                    stats.packetsLostPercentage)
+        pingStats.mapTo(output) {
+            "${it.ipAddress}, ${it.minLatency}, ${it.maxLatency}, ${it.avgLatency}, " +
+                    "${it.packetsSent}, ${it.packetsReceived}, ${it.packetsLost}, ${it.packetsLostPercentage}"
         }
 
         return output
